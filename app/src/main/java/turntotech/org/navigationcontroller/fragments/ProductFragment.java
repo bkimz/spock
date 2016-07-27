@@ -11,6 +11,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -19,6 +20,9 @@ import turntotech.org.navigationcontroller.R;
 
 
 public class ProductFragment extends ListFragment {
+
+    WebviewFragment webviewFragment;
+    int companyPosition;
 
     public ProductFragment() {
         // Required empty public constructor
@@ -44,7 +48,7 @@ public class ProductFragment extends ListFragment {
 
 
         Bundle bundle = this.getArguments();
-        int companyPosition = bundle.getInt("CompanyIndex");
+        companyPosition = bundle.getInt("CompanyIndex");
         title.setText(bundle.getString("CompanyTitle") + " Products");
 
 
@@ -52,10 +56,16 @@ public class ProductFragment extends ListFragment {
         String[] products = null;
 
         if(companyPosition==0){
-            products = new String[] { "iPhone", "iPAD" };
+            products = new String[] { Apple.iphone, Apple.ipad, Apple.mac };
         }
         if(companyPosition==1){
-            products = new String[] { "Galaxy Note", "Galaxy Tab" };
+            products = new String[] {Samsung.gearvr, Samsung.gearfit, Samsung.s7};
+        }
+        if(companyPosition==2){
+            products = new String[] { LG.g5, LG.gpad2, LG.smartwatch };
+        }
+        if(companyPosition==3){
+            products = new String[] { Huawei.p9, Huawei.matebook, Huawei.talkband };
         }
 
 
@@ -65,6 +75,21 @@ public class ProductFragment extends ListFragment {
         return inflater.inflate(R.layout.fragment_list, container, false);
     }
 
+    @Override
+    public void onListItemClick(ListView l, View v, int position, long id) {
+        super.onListItemClick(l, v, position, id);
+
+        Bundle bundle = new Bundle();
+        bundle.putInt("CompanySelected", companyPosition);
+        bundle.putInt("ProductName", position);
+
+        webviewFragment.setArguments(bundle);
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+        transaction.addToBackStack(null);
+        transaction.replace(R.id.fragment_container, webviewFragment);
+        transaction.commit();
+
+    }
 
 
 }
