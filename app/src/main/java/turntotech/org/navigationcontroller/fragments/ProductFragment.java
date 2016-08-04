@@ -12,9 +12,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import turntotech.org.navigationcontroller.R;
 
@@ -24,9 +26,12 @@ public class ProductFragment extends ListFragment {
     WebviewFragment webviewFragment;
     int companyPosition;
 
+
     public ProductFragment() {
+        webviewFragment = new WebviewFragment();
         // Required empty public constructor
     }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -56,24 +61,38 @@ public class ProductFragment extends ListFragment {
         String[] products = null;
 
         if(companyPosition==0){
-            products = new String[] { Apple.iphone, Apple.ipad, Apple.mac };
+            products = new String[] { "iPhone", "iPad", "Mac" };
         }
         if(companyPosition==1){
-            products = new String[] {Samsung.gearvr, Samsung.gearfit, Samsung.s7};
+            products = new String[] {"Galaxy Gear VR", "Galaxy Gear Fit", "Galaxy S7"};
         }
         if(companyPosition==2){
-            products = new String[] { LG.g5, LG.gpad2, LG.smartwatch };
+            products = new String[] { "LG G5", "LG GPad 2", "LG Smart Watches" };
         }
         if(companyPosition==3){
-            products = new String[] { Huawei.p9, Huawei.matebook, Huawei.talkband };
+            products = new String[] { "Huawei P9", "Huawei Matebook", "Huawei Talkband 3" };
         }
+
 
 
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, products);
         setListAdapter(arrayAdapter);
 
+
+
+
+
+
+
         return inflater.inflate(R.layout.fragment_list, container, false);
     }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        registerForContextMenu(this.getListView());
+    }
+
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
@@ -90,6 +109,7 @@ public class ProductFragment extends ListFragment {
         transaction.commit();
 
     }
+
 
 
 }
