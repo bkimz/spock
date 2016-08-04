@@ -5,6 +5,8 @@ import android.app.ListFragment;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -20,14 +22,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import turntotech.org.navigationcontroller.MainActivity;
 import turntotech.org.navigationcontroller.R;
 
 
-public class CompanyFragment extends ListFragment {
+public class CompanyFragment extends ListFragment  {
 
     ProductFragment productFragment;
     AwesomeAdapter adapter;
-    private List <Companies> companiesList;
 
 
     public CompanyFragment() {
@@ -51,28 +53,25 @@ public class CompanyFragment extends ListFragment {
         actionBar.setDisplayShowCustomEnabled(true);
         title.setText("Watch List");
 
-        String[] companies = new String[] { "Apple", "Samsung", "LG", "Huawei" };
-        String[] companyStockPrice = new String[]{"$120", "$1200", "$600", "$40"};
-        int [] icons = new int[]{R.drawable.apple, R.drawable.samsung, R.drawable.lg, R.drawable.huawei};
 
 
-        companiesList = new ArrayList<Companies>();
-
-
-        for (int i = 0; i < companies.length; i++){
-            Companies addcompany = new Companies(icons[i], companies[i], companyStockPrice[i]);
-            companiesList.add(addcompany);
-
-        }
-
-        adapter = new AwesomeAdapter(getActivity(), companiesList);
+        adapter = new AwesomeAdapter(getActivity(), MainActivity.companiesList);
         setListAdapter(adapter);
 
 
 
 
-            return inflater.inflate(R.layout.fragment_list, container, false);
+
+        return inflater.inflate(R.layout.fragment_list, container, false);
     }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        registerForContextMenu(this.getListView());
+    }
+
+
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
@@ -99,6 +98,48 @@ public class CompanyFragment extends ListFragment {
 
 
     }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+
+        menu.setHeaderTitle("Edit");
+        menu.add("Delete");
+
+
+
+
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        String menuString = String.valueOf(item.getTitle());
+        int position = info.position;
+
+
+
+        switch (menuString) {
+
+            case "Delete": // <-- your custom menu item id here
+                MainActivity.companiesList.remove(position);
+                //companiesList.remove(getSelectedItemPosition());
+
+                 // companiesList.remove(getListAdapter().getItem(getSelectedItemPosition()));
+
+
+                Log.d("position" , " " + position);
+
+                adapter.notifyDataSetChanged();
+                return true;
+
+            default:
+                return super.onContextItemSelected(item);
+        }
+
+    }
+
 
 
 }
